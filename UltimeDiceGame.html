@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <title>Ultime Dice Game</title>
+</head>
+<body>
+    <script>
+        let results = []
+        function createElements(){
+
+            document.body.style.display = 'flex'
+            document.body.style.justifyContent = 'center'
+            document.body.style.alignContent = 'center'
+            document.body.style.flexDirection = 'column'
+            document.body.style.fontFamily = 'Roboto'
+            document.body.style.margin = '0px'
+            document.body.style.padding = '0px'
+
+            headerSection()
+            gameSection()
+            buttonSection()
+            gameplayLogic()
+        }
+
+        function headerSection(){
+
+            const header = document.createElement('div');
+            const h1 = document.createElement('h1');
+            header.style.backgroundColor = '#d93759';
+            header.style.width = '100%';
+
+            h1.textContent = 'Role os dados!';
+            h1.style.color = 'white';
+            h1.style.textAlign = 'center';
+
+            header.appendChild(h1);
+            document.body.appendChild(header);
+
+        }
+        function gameSection(){
+
+            const gameDiv = document.createElement('div');
+            const playerOneDiv = document.createElement('div');
+            const playerTwoDiv = document.createElement('div');
+            playerOneDiv.classList.add('playerOne', 'game-on');
+            playerTwoDiv.classList.add('playerTwo', 'game-on');
+
+
+            playerOneDiv.innerHTML = '<h3>Player One</h3>'
+            playerTwoDiv.innerHTML = '<h3>Player Two</h3>'
+
+            gameDiv.classList.add('game-div');
+            gameDiv.style.display = 'flex'
+            gameDiv.style.justifyContent = 'center'
+            gameDiv.style.gap = '10px'
+            gameDiv.style.alignContent = 'center'
+            gameDiv.style.width = '100%'
+            gameDiv.style.height = '400px'
+            gameDiv.style.padding = '10px'
+
+
+            const applyStylesToPlayers = (el) => {
+                el.style.width = '500px'
+                el.style.border = '1px solid black';
+                el.style.display = 'flex'
+                el.style.justifyContent = 'flex-start'
+                el.style.alignItems = 'center'
+                el.style.flexDirection = 'column'
+            }
+            applyStylesToPlayers(playerOneDiv);
+            applyStylesToPlayers(playerTwoDiv);
+            gameDiv.appendChild(playerOneDiv);
+            gameDiv.appendChild(playerTwoDiv);
+            document.body.appendChild(gameDiv);
+        }
+        function buttonSection(){
+
+            const buttonDiv = document.createElement('div');
+            const button = document.createElement('button');
+            buttonDiv.classList.add('button-div');
+
+            buttonDiv.style.display = 'flex'
+            buttonDiv.style.justifyContent = 'center'
+            buttonDiv.style.alignContent = 'center'
+            buttonDiv.style.width = '100%'
+            buttonDiv.style.height = '400px'
+            buttonDiv.style.padding = '10px'
+            button.textContent = 'Jogador 1: Rolar dado';
+            button.style.width = '80%';
+            button.style.height = '80px';
+            button.style.fontSize = '56px';
+
+            buttonDiv.appendChild(button);
+            document.body.appendChild(buttonDiv);
+        }
+        function gameplayLogic(){
+            const button = document.querySelector('button');
+            button.addEventListener('click', rollDice)
+        }
+        function rollDice(e) {
+            const diceResult = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+            const playersDiv = document.querySelectorAll('.game-on');
+            const image = document.createElement('img');
+
+            image.style.width = '200px'
+
+            if (e.target.textContent.toLowerCase() === 'jogador 1: rolar dado') {
+                results[0] = diceResult(1, 6)
+                createDiceImg(results[0], image)
+                playersDiv[0].appendChild(image);
+                e.target.textContent = 'jogador 2: rolar dado'
+            } else if (e.target.textContent.toLowerCase() === 'jogador 2: rolar dado') {
+                results[1] = diceResult(1, 6)
+                createDiceImg(results[1], image)
+                playersDiv[1].appendChild(image);
+                e.target.textContent = 'Jogar Novamente'
+                checkWinner(results)
+            }else{
+                const h1 = document.querySelector('h1');
+                const img = playersDiv[0].querySelector('img');
+                const img2 = playersDiv[1].querySelector('img');
+                playersDiv[0].removeChild(img);
+                playersDiv[1].removeChild(img2);
+                e.target.textContent = 'Jogador 1: Rolar dado'
+                h1.textContent = 'Role o dado!'
+
+            }
+
+        }
+        function createDiceImg(random,image){
+            switch (random) {
+                case 1:
+                    image.setAttribute('src', './imgs/dice_one.png')
+                    break
+                case 2:
+                    image.setAttribute('src', './imgs/dice_two.png')
+                    break
+                case 3:
+                    image.setAttribute('src', './imgs/dice_three.png')
+                    break
+                case 4:
+                    image.setAttribute('src', './imgs/dice_four.png')
+                    break
+                case 5:
+                    image.setAttribute('src', './imgs/dice_five.png')
+                    break
+                default:
+                    image.setAttribute('src', './imgs/dice_six.png')
+                    break
+            }
+        }
+        function checkWinner(results){
+            console.log(results)
+            const h1 = document.querySelector('h1')
+            if(results[0] > results[1]){
+                h1.textContent = 'Jogador 1 Ganhou!!'
+            }else if(results[0] < results[1]){
+                h1.textContent = 'Jogador 2 Ganhou!!'
+            }else{
+                h1.textContent = 'Empate'
+            }
+        }
+        createElements()
+    </script>
+</body>
+</html>
